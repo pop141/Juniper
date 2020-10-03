@@ -50,11 +50,20 @@ class GetVLAN():
         port_type = responce.find('.//interface-vlan-member-tagness').text
 
         if port_type == "tagged":
+            a = []
+            b = []
             for x in responce.xpath('.//interface-vlan-member-list/interface-vlan-member'):
-               a  = x.findtext('interface-vlan-member-tagid')
-               b  = x.findtext('interface-vlan-name')
+               a.append(x.findtext('interface-vlan-member-tagid'))
+               b.append(x.findtext('interface-vlan-name'))
+
+            vlans = {id: des for id, des in zip(a,b)}
+            nl = '\n'
+
+            data = f"Name: {name}\nInterface Status: {status}\nVLAN Member:\n{nl.join('Name: {} ID: {}'.format(v, k) for k, v in vlans.items())} \n (mode {port_type})"
+            return data
+
         else:
-            data = f"Name: {name}\n Interface Status: {status}\n VLAN Member: {vlan_id} ({vlan_name})"
+            data = f"Name: {name}\nInterface Status: {status}\nVLAN Member: {vlan_id} ({vlan_name} mode {port_type})"
             return data
 
 
