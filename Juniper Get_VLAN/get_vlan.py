@@ -3,7 +3,6 @@ from jnpr.junos import exception
 
 '''
 ToDo:
-Add trunk support
 Add device close
 running junos-eznc==2.2.1
 
@@ -29,10 +28,10 @@ class GetVLAN():
 
         return dev
 
-    def close_device(self, dev):
-        close = f"Closing connection to device {dev.facts['hostname']}"
-        dev.close
-        return close
+    def closeDevice(self, device):
+        cl = f"Closing connection to device {device.facts['hostname']}"
+        device.close()
+        return cl
 
     def IntVLAN(self, ip, usr, pwd, intf):
 
@@ -60,11 +59,17 @@ class GetVLAN():
             nl = '\n'
 
             data = f"Name: {name}\nInterface Status: {status}\nVLAN Member:\n{nl.join('Name: {} ID: {}'.format(v, k) for k, v in vlans.items())} \n (mode {port_type})"
-            return data
+            close = self.closeDevice(dev)
+
+            return data + "\n" + close
+
 
         else:
             data = f"Name: {name}\nInterface Status: {status}\nVLAN Member: {vlan_id} ({vlan_name} mode {port_type})"
-            return data
+            close = self.closeDevice(dev)
+
+            return data + "\n" + close
+        
 
 
 
